@@ -1,0 +1,6 @@
+{
+  "name": "Purity Homes",
+  "description": "Purity Homes real estate residence discovery platform.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
