@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, MapPin, Bed, Bath, Maximize, ChevronDown, Check } from 'lucide-react';
+import { Heart, MapPin, Bed, Bath, Maximize, ChevronDown, Check, ArrowLeft, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export interface PropertyCardData {
@@ -136,6 +136,7 @@ export const PropertyResultsGrid: React.FC<PropertyResultsGridProps> = ({
   const [savedPropertyIds, setSavedPropertyIds] = useState<string[]>([]);
   const [selectedSort, setSelectedSort] = useState('Newest First');
   const [isSortOpen, setIsSortOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const toggleSaveProperty = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -144,8 +145,16 @@ export const PropertyResultsGrid: React.FC<PropertyResultsGridProps> = ({
     );
   };
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    const el = document.getElementById('property-results-container');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
-    <div className={`w-full ${className}`}>
+    <div id="property-results-container" className={`w-full ${className}`}>
       {/* 1. Results Header: Showing Count & Sort Dropdown */}
       <div className="flex flex-row items-center justify-between gap-4 mb-6 sm:mb-8">
         <p className="text-sm sm:text-base font-semibold text-neutral-700 font-['Plus_Jakarta_Sans',sans-serif]">
@@ -303,6 +312,103 @@ export const PropertyResultsGrid: React.FC<PropertyResultsGridProps> = ({
             </motion.div>
           );
         })}
+      </div>
+
+      {/* 3. Bottom Pagination Section matching reference mockup */}
+      <div className="flex items-center justify-center gap-2 sm:gap-3 mt-12 sm:mt-14 pb-4">
+        {/* Previous Page Arrow */}
+        <button
+          type="button"
+          id="pagination-prev-btn"
+          onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+          disabled={currentPage === 1}
+          aria-label="Previous Page"
+          className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl border border-neutral-300 bg-white flex items-center justify-center text-neutral-700 hover:border-neutral-400 hover:bg-neutral-50 disabled:opacity-40 disabled:hover:bg-white disabled:hover:border-neutral-300 disabled:cursor-not-allowed transition-all duration-150 cursor-pointer shadow-2xs"
+        >
+          <ArrowLeft className="w-4 h-4" />
+        </button>
+
+        {/* Page 1 */}
+        <button
+          type="button"
+          onClick={() => handlePageChange(1)}
+          className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl font-bold text-xs sm:text-sm transition-all duration-150 cursor-pointer ${
+            currentPage === 1
+              ? 'bg-[#5dbd8c] text-white shadow-sm'
+              : 'border border-neutral-300 bg-white text-neutral-800 hover:border-neutral-400 hover:bg-neutral-50'
+          }`}
+        >
+          1
+        </button>
+
+        {/* Page 2 */}
+        <button
+          type="button"
+          onClick={() => handlePageChange(2)}
+          className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl font-bold text-xs sm:text-sm transition-all duration-150 cursor-pointer ${
+            currentPage === 2
+              ? 'bg-[#5dbd8c] text-white shadow-sm'
+              : 'border border-neutral-300 bg-white text-neutral-800 hover:border-neutral-400 hover:bg-neutral-50'
+          }`}
+        >
+          2
+        </button>
+
+        {/* Page 3 */}
+        <button
+          type="button"
+          onClick={() => handlePageChange(3)}
+          className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl font-bold text-xs sm:text-sm transition-all duration-150 cursor-pointer ${
+            currentPage === 3
+              ? 'bg-[#5dbd8c] text-white shadow-sm'
+              : 'border border-neutral-300 bg-white text-neutral-800 hover:border-neutral-400 hover:bg-neutral-50'
+          }`}
+        >
+          3
+        </button>
+
+        {/* Page 4 */}
+        <button
+          type="button"
+          onClick={() => handlePageChange(4)}
+          className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl font-bold text-xs sm:text-sm transition-all duration-150 cursor-pointer ${
+            currentPage === 4
+              ? 'bg-[#5dbd8c] text-white shadow-sm'
+              : 'border border-neutral-300 bg-white text-neutral-800 hover:border-neutral-400 hover:bg-neutral-50'
+          }`}
+        >
+          4
+        </button>
+
+        {/* Ellipsis */}
+        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl border border-neutral-300 bg-white flex items-center justify-center text-neutral-500 font-bold text-xs sm:text-sm select-none">
+          ......
+        </div>
+
+        {/* Page 12 */}
+        <button
+          type="button"
+          onClick={() => handlePageChange(12)}
+          className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl font-bold text-xs sm:text-sm transition-all duration-150 cursor-pointer ${
+            currentPage === 12
+              ? 'bg-[#5dbd8c] text-white shadow-sm'
+              : 'border border-neutral-300 bg-white text-neutral-800 hover:border-neutral-400 hover:bg-neutral-50'
+          }`}
+        >
+          12
+        </button>
+
+        {/* Next Page Arrow */}
+        <button
+          type="button"
+          id="pagination-next-btn"
+          onClick={() => handlePageChange(Math.min(12, currentPage + 1))}
+          disabled={currentPage === 12}
+          aria-label="Next Page"
+          className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl border border-neutral-300 bg-white flex items-center justify-center text-neutral-700 hover:border-neutral-400 hover:bg-neutral-50 disabled:opacity-40 disabled:hover:bg-white disabled:hover:border-neutral-300 disabled:cursor-not-allowed transition-all duration-150 cursor-pointer shadow-2xs"
+        >
+          <ArrowRight className="w-4 h-4" />
+        </button>
       </div>
     </div>
   );

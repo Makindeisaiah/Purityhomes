@@ -97,9 +97,6 @@ export default function App() {
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
             />
-            <MapSection />
-            <InteriorShowcase />
-            <Testimonials />
           </div>
         ) : (
           /* Main Landing Page View */
