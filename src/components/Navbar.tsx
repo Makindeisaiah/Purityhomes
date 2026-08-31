@@ -5,15 +5,24 @@ import { motion } from 'framer-motion';
 interface NavbarProps {
   activeTab?: string;
   onSelectTab?: (tab: string) => void;
+  onHeaderSearch?: (query: string) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   activeTab = 'HOME',
   onSelectTab,
+  onHeaderSearch,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const handleHeaderSearchSubmit = () => {
+    if (searchQuery.trim()) {
+      onHeaderSearch?.(searchQuery.trim());
+      setIsSearchActive(false);
+    }
+  };
 
   const navLinks = [
     { label: 'HOME', href: '#home' },
@@ -93,7 +102,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search properties, cities..."
+                    onKeyDown={(e) => e.key === 'Enter' && handleHeaderSearchSubmit()}
+                    placeholder="Search properties, cities... (Press Enter)"
                     className="w-full text-sm bg-transparent outline-none text-neutral-800 placeholder:text-neutral-400"
                     autoFocus
                   />

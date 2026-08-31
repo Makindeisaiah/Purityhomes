@@ -35,13 +35,36 @@ export default function App() {
     setPropertyFilters(params);
   };
 
+  const handleTabSelect = (tab: string) => {
+    setActiveTab(tab);
+    if (tab === 'HOME' || tab === 'PROPERTY') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (tab === 'PRODUCT') {
+      const el = document.getElementById('product');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    } else if (tab === 'ABOUT US') {
+      const el = document.getElementById('about');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    } else if (tab === 'CONTACT') {
+      const el = document.getElementById('contact');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white text-neutral-900 flex flex-col selection:bg-[#4cb882]/20 selection:text-[#2d7752]">
       {/* Header with Logo, Navigation Links, Search & Profile */}
       <Navbar
         activeTab={activeTab}
-        onSelectTab={(tab) => {
-          setActiveTab(tab);
+        onSelectTab={handleTabSelect}
+        onHeaderSearch={(query) => {
+          setPropertyFilters({
+            query,
+            type: '',
+            minPrice: '',
+            maxPrice: '',
+          });
+          setActiveTab('PROPERTY');
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
       />
@@ -49,16 +72,14 @@ export default function App() {
       {/* Main Content */}
       <main className="flex-1 flex flex-col justify-start">
         {activeTab === 'PROPERTY' ? (
-          /* Property Listings Page View */
+          /* Dedicated Property Listings Page View */
           <div className="flex flex-col">
             <PropertyHero
               onSearch={handlePropertySearch}
-              onNavigateHome={() => {
-                setActiveTab('HOME');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
+              onNavigateHome={() => handleTabSelect('HOME')}
             />
             <PropertyListings
+              isPropertyPage={true}
               searchQuery={propertyFilters.query}
               selectedType={propertyFilters.type}
               minPrice={propertyFilters.minPrice}
@@ -71,6 +92,10 @@ export default function App() {
                   maxPrice: '',
                 })
               }
+              onNavigateToPropertyPage={() => {
+                const el = document.getElementById('property-listings-grid');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
             />
             <MapSection />
             <InteriorShowcase />
@@ -82,7 +107,10 @@ export default function App() {
             <Hero onSearch={handleHomeSearch} />
             <StatsBanner />
             <MapSection />
-            <PropertyListings />
+            <PropertyListings
+              isPropertyPage={false}
+              onNavigateToPropertyPage={() => handleTabSelect('PROPERTY')}
+            />
             <InteriorShowcase />
             <Testimonials />
           </div>

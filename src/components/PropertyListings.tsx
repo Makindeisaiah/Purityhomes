@@ -17,6 +17,8 @@ interface PropertyListingsProps {
   minPrice?: string;
   maxPrice?: string;
   onResetFilters?: () => void;
+  onNavigateToPropertyPage?: () => void;
+  isPropertyPage?: boolean;
 }
 
 export const PropertyListings: React.FC<PropertyListingsProps> = ({
@@ -25,6 +27,8 @@ export const PropertyListings: React.FC<PropertyListingsProps> = ({
   minPrice = '',
   maxPrice = '',
   onResetFilters,
+  onNavigateToPropertyPage,
+  isPropertyPage = false,
 }) => {
   const allProperties: PropertyItem[] = [
     {
@@ -123,20 +127,45 @@ export const PropertyListings: React.FC<PropertyListingsProps> = ({
             </p>
           </div>
 
-          {/* Action Button: Top-Right */}
-          <div className="shrink-0 pt-1">
+          {/* Action Button / Filter Reset: Top-Right */}
+          <div className="shrink-0 pt-1 flex items-center gap-3">
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={onResetFilters}
+                className="text-xs sm:text-sm font-bold text-neutral-500 hover:text-neutral-900 px-4 py-2 rounded-full border border-neutral-300 hover:border-neutral-400 transition-colors cursor-pointer"
+              >
+                Clear Filters
+              </button>
+            )}
             <button
               id="btn-see-our-property"
               type="button"
+              onClick={onNavigateToPropertyPage}
               className="bg-[#4cb882] hover:bg-[#3fa06f] active:scale-[0.98] text-white font-semibold text-sm sm:text-[15px] px-7 sm:px-9 py-3.5 sm:py-4 rounded-full transition-all duration-150 shadow-sm cursor-pointer whitespace-nowrap"
             >
-              Let’s See Our Property
+              {isPropertyPage ? `${properties.length} Properties Available` : 'Let’s See Our Property'}
             </button>
           </div>
         </motion.div>
 
+        {/* Empty state if filters match nothing */}
+        {properties.length === 0 && (
+          <div className="text-center py-16 px-4 bg-neutral-50 rounded-3xl border border-neutral-200/80 my-6">
+            <p className="text-lg font-bold text-neutral-800">No properties found matching your search</p>
+            <p className="text-sm text-neutral-500 mt-1">Try clearing or adjusting your search filters above.</p>
+            <button
+              type="button"
+              onClick={onResetFilters}
+              className="mt-5 bg-[#5dbd8c] hover:bg-[#4eb37f] text-white text-sm font-bold px-6 py-2.5 rounded-full transition-colors"
+            >
+              Reset Search
+            </button>
+          </div>
+        )}
+
         {/* 3-Column Property Grid with Staggered Fade + Slide-up */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
+        <div id="property-listings-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
           {properties.map((property, index) => (
             <motion.div
               key={property.id}
