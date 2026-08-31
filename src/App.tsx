@@ -10,7 +10,7 @@ import { Testimonials } from './components/Testimonials';
 import { Footer } from './components/Footer';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('PROPERTY');
+  const [activeTab, setActiveTab] = useState('HOME');
   const [propertyFilters, setPropertyFilters] = useState<PropertySearchParams>({
     query: '',
     type: '',
