@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { PropertyFilterSidebar } from './PropertyFilterSidebar';
 
-interface PropertyItem {
+export interface PropertyItem {
   id: string;
   name: string;
   address: string;
@@ -104,110 +105,150 @@ export const PropertyListings: React.FC<PropertyListingsProps> = ({
 
   const hasActiveFilters = searchQuery || (selectedType && selectedType !== 'Select Type' && selectedType !== 'All Types');
 
+  const renderCards = (isTwoColumns: boolean) => (
+    <div
+      id="property-listings-grid"
+      className={`grid grid-cols-1 md:grid-cols-2 ${
+        isTwoColumns ? 'lg:grid-cols-2 xl:grid-cols-2 gap-6 sm:gap-8' : 'lg:grid-cols-3 gap-8 sm:gap-10'
+      }`}
+    >
+      {properties.map((property, index) => (
+        <motion.div
+          key={property.id}
+          id={`property-card-${property.id}`}
+          initial={{ opacity: 0, y: 35 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{
+            duration: 0.65,
+            delay: index * 0.1,
+            ease: 'easeOut',
+          }}
+          whileHover={{ y: -4 }}
+          className="group flex flex-col cursor-pointer"
+        >
+          {/* Card Image Container with price badge overlaid */}
+          <div className="relative w-full aspect-[4/3] rounded-2xl sm:rounded-[1.35rem] overflow-hidden bg-neutral-100 shadow-sm">
+            <img
+              src={property.image}
+              alt={property.name}
+              className="w-full h-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
+              referrerPolicy="no-referrer"
+            />
+            
+            {/* Price Badge on bottom-right of the image */}
+            <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 bg-[#4cb882] text-white font-bold text-sm sm:text-[15px] px-3.5 sm:px-4 py-1.5 rounded-lg sm:rounded-xl shadow-md tracking-tight">
+              {property.price}
+            </div>
+          </div>
+
+          {/* Card Information: Name in green, Address underneath */}
+          <div className="mt-4 flex flex-col space-y-1">
+            <h3 className="text-lg sm:text-xl font-bold text-[#4cb882] group-hover:text-[#3fa06f] transition-colors leading-snug">
+              {property.name}
+            </h3>
+            <p className="text-xs sm:text-sm font-medium text-neutral-800 leading-relaxed">
+              {property.address}
+            </p>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  );
+
   return (
     <section id="property" className="w-full bg-white pb-20 sm:pb-24 lg:pb-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
-        {/* Header Row: Title & Subtext on Left, Action Button on Right */}
-        <motion.div
-          initial={{ opacity: 0, y: 25 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.7, ease: 'easeOut' }}
-          className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-10 sm:mb-14"
-        >
-          <div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-neutral-950 leading-[1.15] tracking-[-0.02em] font-['Plus_Jakarta_Sans',sans-serif]">
-              <span>All The </span>
-              <span className="text-[#4cb882]">Best Residences</span>
-              <br />
-              <span>From Us For You</span>
-            </h2>
-            <p className="mt-3 sm:mt-4 text-sm sm:text-base font-medium text-neutral-500">
-              We Have Developed A Total Of 10,500+ Properties
-            </p>
-          </div>
+        {isPropertyPage ? (
+          /* Property Listing Page: Sidebar Filters on Left + Property Grid on Right (No "All The Best Residences" header) */
+          <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-10 pt-2">
+            {/* Sidebar Column */}
+            <div className="w-full lg:w-[290px] xl:w-[300px] shrink-0">
+              <PropertyFilterSidebar />
+            </div>
 
-          {/* Action Button / Filter Reset: Top-Right */}
-          <div className="shrink-0 pt-1 flex items-center gap-3">
-            {hasActiveFilters && (
-              <button
-                type="button"
-                onClick={onResetFilters}
-                className="text-xs sm:text-sm font-bold text-neutral-500 hover:text-neutral-900 px-4 py-2 rounded-full border border-neutral-300 hover:border-neutral-400 transition-colors cursor-pointer"
-              >
-                Clear Filters
-              </button>
-            )}
-            <button
-              id="btn-see-our-property"
-              type="button"
-              onClick={onNavigateToPropertyPage}
-              className="bg-[#4cb882] hover:bg-[#3fa06f] active:scale-[0.98] text-white font-semibold text-sm sm:text-[15px] px-7 sm:px-9 py-3.5 sm:py-4 rounded-full transition-all duration-150 shadow-sm cursor-pointer whitespace-nowrap"
-            >
-              {isPropertyPage ? `${properties.length} Properties Available` : 'Let’s See Our Property'}
-            </button>
-          </div>
-        </motion.div>
-
-        {/* Empty state if filters match nothing */}
-        {properties.length === 0 && (
-          <div className="text-center py-16 px-4 bg-neutral-50 rounded-3xl border border-neutral-200/80 my-6">
-            <p className="text-lg font-bold text-neutral-800">No properties found matching your search</p>
-            <p className="text-sm text-neutral-500 mt-1">Try clearing or adjusting your search filters above.</p>
-            <button
-              type="button"
-              onClick={onResetFilters}
-              className="mt-5 bg-[#5dbd8c] hover:bg-[#4eb37f] text-white text-sm font-bold px-6 py-2.5 rounded-full transition-colors"
-            >
-              Reset Search
-            </button>
-          </div>
-        )}
-
-        {/* 3-Column Property Grid with Staggered Fade + Slide-up */}
-        <div id="property-listings-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
-          {properties.map((property, index) => (
-            <motion.div
-              key={property.id}
-              id={`property-card-${property.id}`}
-              initial={{ opacity: 0, y: 35 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.15 }}
-              transition={{
-                duration: 0.65,
-                delay: index * 0.1,
-                ease: 'easeOut',
-              }}
-              whileHover={{ y: -4 }}
-              className="group flex flex-col cursor-pointer"
-            >
-              {/* Card Image Container with price badge overlaid */}
-              <div className="relative w-full aspect-[4/3] rounded-2xl sm:rounded-[1.35rem] overflow-hidden bg-neutral-100 shadow-sm">
-                <img
-                  src={property.image}
-                  alt={property.name}
-                  className="w-full h-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
-                  referrerPolicy="no-referrer"
-                />
-                
-                {/* Price Badge on bottom-right of the image */}
-                <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 bg-[#4cb882] text-white font-bold text-sm sm:text-[15px] px-3.5 sm:px-4 py-1.5 rounded-lg sm:rounded-xl shadow-md tracking-tight">
-                  {property.price}
+            {/* Listings Grid Column */}
+            <div className="flex-1 w-full min-w-0">
+              {/* Empty state if filters match nothing */}
+              {properties.length === 0 && (
+                <div className="text-center py-16 px-4 bg-neutral-50 rounded-3xl border border-neutral-200/80 my-2">
+                  <p className="text-lg font-bold text-neutral-800">No properties found matching your search</p>
+                  <p className="text-sm text-neutral-500 mt-1">Try clearing or adjusting your search filters.</p>
+                  <button
+                    type="button"
+                    onClick={onResetFilters}
+                    className="mt-5 bg-[#5dbd8c] hover:bg-[#4eb37f] text-white text-sm font-bold px-6 py-2.5 rounded-full transition-colors cursor-pointer"
+                  >
+                    Reset Search
+                  </button>
                 </div>
-              </div>
+              )}
 
-              {/* Card Information: Name in green, Address underneath */}
-              <div className="mt-4 flex flex-col space-y-1">
-                <h3 className="text-lg sm:text-xl font-bold text-[#4cb882] group-hover:text-[#3fa06f] transition-colors leading-snug">
-                  {property.name}
-                </h3>
-                <p className="text-xs sm:text-sm font-medium text-neutral-800 leading-relaxed">
-                  {property.address}
+              {renderCards(true)}
+            </div>
+          </div>
+        ) : (
+          /* Home Landing Page: Standard Header Row + 3-Column Grid */
+          <div>
+            <motion.div
+              initial={{ opacity: 0, y: 25 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.7, ease: 'easeOut' }}
+              className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-10 sm:mb-14"
+            >
+              <div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-neutral-950 leading-[1.15] tracking-[-0.02em] font-['Plus_Jakarta_Sans',sans-serif]">
+                  <span>All The </span>
+                  <span className="text-[#4cb882]">Best Residences</span>
+                  <br />
+                  <span>From Us For You</span>
+                </h2>
+                <p className="mt-3 sm:mt-4 text-sm sm:text-base font-medium text-neutral-500">
+                  We Have Developed A Total Of 10,500+ Properties
                 </p>
               </div>
+
+              {/* Action Button / Filter Reset: Top-Right */}
+              <div className="shrink-0 pt-1 flex items-center gap-3">
+                {hasActiveFilters && (
+                  <button
+                    type="button"
+                    onClick={onResetFilters}
+                    className="text-xs sm:text-sm font-bold text-neutral-500 hover:text-neutral-900 px-4 py-2 rounded-full border border-neutral-300 hover:border-neutral-400 transition-colors cursor-pointer"
+                  >
+                    Clear Filters
+                  </button>
+                )}
+                <button
+                  id="btn-see-our-property"
+                  type="button"
+                  onClick={onNavigateToPropertyPage}
+                  className="bg-[#4cb882] hover:bg-[#3fa06f] active:scale-[0.98] text-white font-semibold text-sm sm:text-[15px] px-7 sm:px-9 py-3.5 sm:py-4 rounded-full transition-all duration-150 shadow-sm cursor-pointer whitespace-nowrap"
+                >
+                  Let’s See Our Property
+                </button>
+              </div>
             </motion.div>
-          ))}
-        </div>
+
+            {/* Empty state if filters match nothing */}
+            {properties.length === 0 && (
+              <div className="text-center py-16 px-4 bg-neutral-50 rounded-3xl border border-neutral-200/80 my-6">
+                <p className="text-lg font-bold text-neutral-800">No properties found matching your search</p>
+                <p className="text-sm text-neutral-500 mt-1">Try clearing or adjusting your search filters above.</p>
+                <button
+                  type="button"
+                  onClick={onResetFilters}
+                  className="mt-5 bg-[#5dbd8c] hover:bg-[#4eb37f] text-white text-sm font-bold px-6 py-2.5 rounded-full transition-colors cursor-pointer"
+                >
+                  Reset Search
+                </button>
+              </div>
+            )}
+
+            {renderCards(false)}
+          </div>
+        )}
       </div>
     </section>
   );
