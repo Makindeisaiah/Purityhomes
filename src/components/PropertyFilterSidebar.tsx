@@ -352,14 +352,17 @@ export const PropertyFilterSidebar: React.FC<PropertyFilterSidebarProps> = ({
 
       {/* 7. Bottom CTA: Outline Pill Button */}
       <div className="pt-2">
-        <button
+        <motion.button
           type="button"
           id="btn-apply-sidebar-filter"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ duration: 0.15 }}
           onClick={handleApply}
-          className="w-full border-[1.5px] border-[#5dbd8c] hover:bg-[#5dbd8c] text-[#5dbd8c] hover:text-white font-bold text-sm sm:text-[15px] py-3 rounded-full transition-all duration-150 active:scale-[0.98] cursor-pointer"
+          className="w-full border-[1.5px] border-[#5dbd8c] hover:bg-[#5dbd8c] text-[#5dbd8c] hover:text-white font-bold text-sm sm:text-[15px] py-3 rounded-full transition-colors duration-150 cursor-pointer"
         >
           Apply Filter
-        </button>
+        </motion.button>
       </div>
     </div>
   );
@@ -382,11 +385,17 @@ export const PropertyFilterSidebar: React.FC<PropertyFilterSidebarProps> = ({
       </div>
 
       {/* Desktop Sticky/Fixed Sidebar Box */}
-      <div className="hidden lg:block w-full max-w-[290px] xl:max-w-[300px]">
+      <motion.div
+        initial={{ opacity: 0, x: -30 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+        className="hidden lg:block w-full max-w-[290px] xl:max-w-[300px]"
+      >
         <div className="w-full bg-white rounded-[24px] border-[2px] border-[#5dbd8c] p-6 shadow-sm">
           {FilterContent}
         </div>
-      </div>
+      </motion.div>
 
       {/* Mobile Drawer (Slide-over overlay) */}
       <AnimatePresence>

@@ -89,9 +89,9 @@ export const PropertyHero: React.FC<PropertyHeroProps> = ({
             
             {/* Left Side: Bold Two-Line Heading & Breadcrumbs */}
             <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, ease: 'easeOut' }}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
               className="lg:col-span-5 flex flex-col justify-center z-10 py-4 lg:py-8"
             >
               {/* Main Heading */}
@@ -118,9 +118,9 @@ export const PropertyHero: React.FC<PropertyHeroProps> = ({
 
             {/* Right Side: High-Definition Luxury Residence Exterior Image Bleeding to Right */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.15, ease: 'easeOut' }}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.1, ease: 'easeOut' }}
               className="lg:col-span-7 flex justify-end items-center relative"
             >
               <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] md:aspect-[16/9] rounded-[2rem] sm:rounded-[2.5rem] lg:rounded-l-[2.5rem] lg:rounded-r-none overflow-hidden shadow-sm bg-neutral-200">
@@ -141,9 +141,9 @@ export const PropertyHero: React.FC<PropertyHeroProps> = ({
       {/* Search Bar Container: Half overlapping Hero banner & half on white background below */}
       <div className="relative z-30 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 -mt-10 sm:-mt-12 lg:-mt-14 mb-10 sm:mb-14">
         <motion.div
-          initial={{ opacity: 0, y: 25 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.25, ease: 'easeOut' }}
+          initial={{ opacity: 0, y: 25, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
           ref={containerRef}
           className="w-full bg-white rounded-2xl sm:rounded-3xl border-[2px] border-[#5dbd8c] p-3 sm:p-4 shadow-xl shadow-neutral-950/5"
         >
@@ -318,14 +318,17 @@ export const PropertyHero: React.FC<PropertyHeroProps> = ({
 
             {/* Far Right: Solid Green Pill Button "See Property" */}
             <div className="shrink-0 pt-1 lg:pt-0">
-              <button
+              <motion.button
                 id="btn-property-search-submit"
                 type="button"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.15 }}
                 onClick={handleSearchSubmit}
-                className="w-full lg:w-auto bg-[#5dbd8c] hover:bg-[#4eb37f] active:scale-[0.98] text-white font-bold text-sm sm:text-[15px] px-7 sm:px-8 py-3 rounded-full transition-all duration-150 shadow-md shadow-[#5dbd8c]/25 cursor-pointer whitespace-nowrap"
+                className="w-full lg:w-auto bg-[#5dbd8c] hover:bg-[#4eb37f] text-white font-bold text-sm sm:text-[15px] px-7 sm:px-8 py-3 rounded-full transition-colors duration-150 shadow-md shadow-[#5dbd8c]/25 cursor-pointer whitespace-nowrap"
               >
                 See Property
-              </button>
+              </motion.button>
             </div>
 
           </div>

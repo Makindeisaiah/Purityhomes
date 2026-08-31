@@ -156,7 +156,13 @@ export const PropertyResultsGrid: React.FC<PropertyResultsGridProps> = ({
   return (
     <div id="property-results-container" className={`w-full ${className}`}>
       {/* 1. Results Header: Showing Count & Sort Dropdown */}
-      <div className="flex flex-row items-center justify-between gap-4 mb-6 sm:mb-8">
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        className="flex flex-row items-center justify-between gap-4 mb-6 sm:mb-8"
+      >
         <p className="text-sm sm:text-base font-semibold text-neutral-700 font-['Plus_Jakarta_Sans',sans-serif]">
           Showing 1-9 of {totalProperties}+ properties
         </p>
@@ -215,7 +221,7 @@ export const PropertyResultsGrid: React.FC<PropertyResultsGridProps> = ({
             </AnimatePresence>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* 2. 3-Column Property Card Grid (Responsive to 2 cols on tablet / 1 col on mobile) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 lg:gap-8">
@@ -226,12 +232,12 @@ export const PropertyResultsGrid: React.FC<PropertyResultsGridProps> = ({
             <motion.div
               key={`${property.id}-${index}`}
               id={`property-item-${property.id}-${index}`}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 25 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.1 }}
+              viewport={{ once: true, amount: 0.2 }}
               transition={{
                 duration: 0.5,
-                delay: (index % 3) * 0.1,
+                delay: index * 0.08,
                 ease: 'easeOut',
               }}
               whileHover={{ y: -4 }}
@@ -239,32 +245,35 @@ export const PropertyResultsGrid: React.FC<PropertyResultsGridProps> = ({
             >
               {/* Photo Container */}
               <div className="relative w-full aspect-[16/11] sm:aspect-[4/3] rounded-xl sm:rounded-2xl overflow-hidden bg-neutral-100 mb-3.5">
-                <img
+                <motion.img
                   src={property.image}
                   alt={property.name}
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
+                  whileHover={{ scale: 1.03 }}
+                  transition={{ duration: 0.4, ease: 'easeOut' }}
+                  className="w-full h-full object-cover object-center"
                   referrerPolicy="no-referrer"
                 />
 
                 {/* Top-Left: "For Sale" Green Rounded Badge */}
-                <div className="absolute top-3 left-3 bg-[#5dbd8c] text-white text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 rounded-md sm:rounded-lg shadow-sm">
+                <div className="absolute top-3 left-3 bg-[#5dbd8c] text-white text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 rounded-md sm:rounded-lg shadow-sm pointer-events-none">
                   {property.status || 'For Sale'}
                 </div>
 
                 {/* Top-Right: Heart/Save Toggle Icon */}
-                <button
+                <motion.button
                   type="button"
                   id={`save-property-${property.id}-${index}`}
                   onClick={(e) => toggleSaveProperty(property.id, e)}
+                  whileTap={{ scale: 1.3 }}
                   aria-label={isSaved ? 'Unsave property' : 'Save property'}
-                  className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/25 backdrop-blur-xs flex items-center justify-center text-white hover:bg-black/40 active:scale-90 transition-all cursor-pointer"
+                  className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/25 backdrop-blur-xs flex items-center justify-center text-white hover:bg-black/40 transition-colors cursor-pointer"
                 >
                   <Heart
                     className={`w-4 h-4 transition-colors stroke-[2.2] ${
                       isSaved ? 'fill-red-500 text-red-500 stroke-red-500' : 'text-white'
                     }`}
                   />
-                </button>
+                </motion.button>
               </div>
 
               {/* Property Details */}
@@ -317,68 +326,83 @@ export const PropertyResultsGrid: React.FC<PropertyResultsGridProps> = ({
       {/* 3. Bottom Pagination Section matching reference mockup */}
       <div className="flex items-center justify-center gap-2 sm:gap-3 mt-12 sm:mt-14 pb-4">
         {/* Previous Page Arrow */}
-        <button
+        <motion.button
           type="button"
           id="pagination-prev-btn"
+          whileHover={currentPage === 1 ? {} : { scale: 1.1 }}
+          whileTap={currentPage === 1 ? {} : { scale: 0.9 }}
+          transition={{ duration: 0.15 }}
           onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
           disabled={currentPage === 1}
           aria-label="Previous Page"
-          className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl border border-neutral-300 bg-white flex items-center justify-center text-neutral-700 hover:border-neutral-400 hover:bg-neutral-50 disabled:opacity-40 disabled:hover:bg-white disabled:hover:border-neutral-300 disabled:cursor-not-allowed transition-all duration-150 cursor-pointer shadow-2xs"
+          className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl border border-neutral-300 bg-white flex items-center justify-center text-neutral-700 hover:border-neutral-400 hover:bg-neutral-50 disabled:opacity-40 disabled:hover:bg-white disabled:hover:border-neutral-300 disabled:cursor-not-allowed transition-colors duration-150 cursor-pointer shadow-2xs"
         >
           <ArrowLeft className="w-4 h-4" />
-        </button>
+        </motion.button>
 
         {/* Page 1 */}
-        <button
+        <motion.button
           type="button"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          transition={{ duration: 0.15 }}
           onClick={() => handlePageChange(1)}
-          className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl font-bold text-xs sm:text-sm transition-all duration-150 cursor-pointer ${
+          className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl font-bold text-xs sm:text-sm transition-colors duration-150 cursor-pointer ${
             currentPage === 1
               ? 'bg-[#5dbd8c] text-white shadow-sm'
               : 'border border-neutral-300 bg-white text-neutral-800 hover:border-neutral-400 hover:bg-neutral-50'
           }`}
         >
           1
-        </button>
+        </motion.button>
 
         {/* Page 2 */}
-        <button
+        <motion.button
           type="button"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          transition={{ duration: 0.15 }}
           onClick={() => handlePageChange(2)}
-          className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl font-bold text-xs sm:text-sm transition-all duration-150 cursor-pointer ${
+          className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl font-bold text-xs sm:text-sm transition-colors duration-150 cursor-pointer ${
             currentPage === 2
               ? 'bg-[#5dbd8c] text-white shadow-sm'
               : 'border border-neutral-300 bg-white text-neutral-800 hover:border-neutral-400 hover:bg-neutral-50'
           }`}
         >
           2
-        </button>
+        </motion.button>
 
         {/* Page 3 */}
-        <button
+        <motion.button
           type="button"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          transition={{ duration: 0.15 }}
           onClick={() => handlePageChange(3)}
-          className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl font-bold text-xs sm:text-sm transition-all duration-150 cursor-pointer ${
+          className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl font-bold text-xs sm:text-sm transition-colors duration-150 cursor-pointer ${
             currentPage === 3
               ? 'bg-[#5dbd8c] text-white shadow-sm'
               : 'border border-neutral-300 bg-white text-neutral-800 hover:border-neutral-400 hover:bg-neutral-50'
           }`}
         >
           3
-        </button>
+        </motion.button>
 
         {/* Page 4 */}
-        <button
+        <motion.button
           type="button"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          transition={{ duration: 0.15 }}
           onClick={() => handlePageChange(4)}
-          className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl font-bold text-xs sm:text-sm transition-all duration-150 cursor-pointer ${
+          className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl font-bold text-xs sm:text-sm transition-colors duration-150 cursor-pointer ${
             currentPage === 4
               ? 'bg-[#5dbd8c] text-white shadow-sm'
               : 'border border-neutral-300 bg-white text-neutral-800 hover:border-neutral-400 hover:bg-neutral-50'
           }`}
         >
           4
-        </button>
+        </motion.button>
 
         {/* Ellipsis */}
         <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl border border-neutral-300 bg-white flex items-center justify-center text-neutral-500 font-bold text-xs sm:text-sm select-none">
@@ -386,29 +410,35 @@ export const PropertyResultsGrid: React.FC<PropertyResultsGridProps> = ({
         </div>
 
         {/* Page 12 */}
-        <button
+        <motion.button
           type="button"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          transition={{ duration: 0.15 }}
           onClick={() => handlePageChange(12)}
-          className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl font-bold text-xs sm:text-sm transition-all duration-150 cursor-pointer ${
+          className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl font-bold text-xs sm:text-sm transition-colors duration-150 cursor-pointer ${
             currentPage === 12
               ? 'bg-[#5dbd8c] text-white shadow-sm'
               : 'border border-neutral-300 bg-white text-neutral-800 hover:border-neutral-400 hover:bg-neutral-50'
           }`}
         >
           12
-        </button>
+        </motion.button>
 
         {/* Next Page Arrow */}
-        <button
+        <motion.button
           type="button"
           id="pagination-next-btn"
+          whileHover={currentPage === 12 ? {} : { scale: 1.1 }}
+          whileTap={currentPage === 12 ? {} : { scale: 0.9 }}
+          transition={{ duration: 0.15 }}
           onClick={() => handlePageChange(Math.min(12, currentPage + 1))}
           disabled={currentPage === 12}
           aria-label="Next Page"
-          className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl border border-neutral-300 bg-white flex items-center justify-center text-neutral-700 hover:border-neutral-400 hover:bg-neutral-50 disabled:opacity-40 disabled:hover:bg-white disabled:hover:border-neutral-300 disabled:cursor-not-allowed transition-all duration-150 cursor-pointer shadow-2xs"
+          className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl border border-neutral-300 bg-white flex items-center justify-center text-neutral-700 hover:border-neutral-400 hover:bg-neutral-50 disabled:opacity-40 disabled:hover:bg-white disabled:hover:border-neutral-300 disabled:cursor-not-allowed transition-colors duration-150 cursor-pointer shadow-2xs"
         >
           <ArrowRight className="w-4 h-4" />
-        </button>
+        </motion.button>
       </div>
     </div>
   );
