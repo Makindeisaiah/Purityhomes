@@ -6,16 +6,34 @@ interface PropertyItem {
   name: string;
   address: string;
   price: string;
+  type?: string;
+  priceNum?: number;
   image: string;
 }
 
-export const PropertyListings: React.FC = () => {
-  const properties: PropertyItem[] = [
+interface PropertyListingsProps {
+  searchQuery?: string;
+  selectedType?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  onResetFilters?: () => void;
+}
+
+export const PropertyListings: React.FC<PropertyListingsProps> = ({
+  searchQuery = '',
+  selectedType = '',
+  minPrice = '',
+  maxPrice = '',
+  onResetFilters,
+}) => {
+  const allProperties: PropertyItem[] = [
     {
       id: 'alexandria-house',
       name: 'Alexandria House',
       address: '22037 Fig Tree Ln, Chatsworth, CA 91311',
       price: '$450,000',
+      type: 'Modern Villa',
+      priceNum: 450000,
       image: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=900&q=80',
     },
     {
@@ -23,6 +41,8 @@ export const PropertyListings: React.FC = () => {
       name: 'Lorenzo Apartment',
       address: '8250 Lankershim, North Hollywood, CA 91605',
       price: '$550,000',
+      type: 'Luxury Apartment',
+      priceNum: 550000,
       image: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=900&q=80',
     },
     {
@@ -30,6 +50,8 @@ export const PropertyListings: React.FC = () => {
       name: 'Golden Spring Villa',
       address: '7401 Costello Ave, Van Nuys, CA 91405',
       price: '$500,000',
+      type: 'Modern Villa',
+      priceNum: 500000,
       image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=900&q=80',
     },
     {
@@ -37,6 +59,8 @@ export const PropertyListings: React.FC = () => {
       name: 'Tossi Mansion',
       address: '2046 Thomas St, Los Angeles, CA 90031',
       price: '$650,600',
+      type: 'Waterfront Mansion',
+      priceNum: 650600,
       image: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=900&q=80',
     },
     {
@@ -44,6 +68,8 @@ export const PropertyListings: React.FC = () => {
       name: 'Kellystone Villa',
       address: '1300 Linda Flora Dr, Los Angeles, CA 90049',
       price: '$700,000',
+      type: 'Penthouse Suite',
+      priceNum: 700000,
       image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80',
     },
     {
@@ -51,9 +77,28 @@ export const PropertyListings: React.FC = () => {
       name: 'Convent Hill',
       address: '5606 Park Oak Pl, Los Angeles, CA 90068',
       price: '$520,000',
+      type: 'Townhouse',
+      priceNum: 520000,
       image: 'https://images.unsplash.com/photo-1598228723793-52759bba239c?auto=format&fit=crop&w=900&q=80',
     },
   ];
+
+  // Filter properties based on props
+  const properties = allProperties.filter((item) => {
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      const matches = item.name.toLowerCase().includes(q) || item.address.toLowerCase().includes(q);
+      if (!matches) return false;
+    }
+    if (selectedType && selectedType !== 'All Types' && selectedType !== 'Select Type') {
+      if (item.type && !item.type.toLowerCase().includes(selectedType.toLowerCase())) {
+        return false;
+      }
+    }
+    return true;
+  });
+
+  const hasActiveFilters = searchQuery || (selectedType && selectedType !== 'Select Type' && selectedType !== 'All Types');
 
   return (
     <section id="property" className="w-full bg-white pb-20 sm:pb-24 lg:pb-28">

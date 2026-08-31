@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
+import { PropertyHero, PropertySearchParams } from './components/PropertyHero';
 import { StatsBanner } from './components/StatsBanner';
 import { MapSection } from './components/MapSection';
 import { PropertyListings } from './components/PropertyListings';
@@ -9,25 +10,83 @@ import { Testimonials } from './components/Testimonials';
 import { Footer } from './components/Footer';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('HOME');
+  const [activeTab, setActiveTab] = useState('PROPERTY');
+  const [propertyFilters, setPropertyFilters] = useState<PropertySearchParams>({
+    query: '',
+    type: '',
+    minPrice: '',
+    maxPrice: '',
+  });
 
-  const handleSearch = (criteria: { location: string; type: string; budget: string }) => {
-    console.log('Searching properties with criteria:', criteria);
+  const handleHomeSearch = (criteria: { location: string; type: string; budget: string }) => {
+    console.log('Searching properties from Home:', criteria);
+    setPropertyFilters({
+      query: criteria.location,
+      type: criteria.type,
+      minPrice: '',
+      maxPrice: criteria.budget,
+    });
+    setActiveTab('PROPERTY');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handlePropertySearch = (params: PropertySearchParams) => {
+    console.log('Searching properties from PropertyHero:', params);
+    setPropertyFilters(params);
   };
 
   return (
     <div className="min-h-screen bg-white text-neutral-900 flex flex-col selection:bg-[#4cb882]/20 selection:text-[#2d7752]">
       {/* Header with Logo, Navigation Links, Search & Profile */}
-      <Navbar activeTab={activeTab} onSelectTab={setActiveTab} />
+      <Navbar
+        activeTab={activeTab}
+        onSelectTab={(tab) => {
+          setActiveTab(tab);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+      />
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col justify-start">
-        <Hero onSearch={handleSearch} />
-        <StatsBanner />
-        <MapSection />
-        <PropertyListings />
-        <InteriorShowcase />
-        <Testimonials />
+        {activeTab === 'PROPERTY' ? (
+          /* Property Listings Page View */
+          <div className="flex flex-col">
+            <PropertyHero
+              onSearch={handlePropertySearch}
+              onNavigateHome={() => {
+                setActiveTab('HOME');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+            <PropertyListings
+              searchQuery={propertyFilters.query}
+              selectedType={propertyFilters.type}
+              minPrice={propertyFilters.minPrice}
+              maxPrice={propertyFilters.maxPrice}
+              onResetFilters={() =>
+                setPropertyFilters({
+                  query: '',
+                  type: '',
+                  minPrice: '',
+                  maxPrice: '',
+                })
+              }
+            />
+            <MapSection />
+            <InteriorShowcase />
+            <Testimonials />
+          </div>
+        ) : (
+          /* Main Landing Page View */
+          <div className="flex flex-col">
+            <Hero onSearch={handleHomeSearch} />
+            <StatsBanner />
+            <MapSection />
+            <PropertyListings />
+            <InteriorShowcase />
+            <Testimonials />
+          </div>
+        )}
       </main>
 
       {/* Footer Section */}

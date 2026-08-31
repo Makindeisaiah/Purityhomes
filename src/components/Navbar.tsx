@@ -32,10 +32,11 @@ export const Navbar: React.FC<NavbarProps> = ({
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-5 sm:py-6 flex items-center justify-between">
         {/* Left: Brand Logo */}
-        <a
-          href="#home"
+        <button
+          type="button"
           id="brand-logo"
-          className="flex items-center gap-1 group select-none cursor-pointer focus:outline-none"
+          onClick={() => onSelectTab?.('HOME')}
+          className="flex items-center gap-1 group select-none cursor-pointer focus:outline-none text-left"
         >
           <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 font-['Plus_Jakarta_Sans',sans-serif]">
             Purity
@@ -43,7 +44,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#4cb882] font-['Plus_Jakarta_Sans',sans-serif]">
             Homes
           </span>
-        </a>
+        </button>
 
         {/* Center: Nav links (Desktop) */}
         <nav className="hidden md:flex items-center gap-6 lg:gap-10">
@@ -58,16 +59,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                   e.preventDefault();
                   onSelectTab?.(item.label);
                 }}
-                className={`text-xs lg:text-sm font-semibold tracking-wider transition-colors duration-150 relative py-1 ${
+                className={`text-xs lg:text-sm font-bold tracking-wider transition-colors duration-150 relative py-1 ${
                   isActive
-                    ? 'text-neutral-950'
-                    : 'text-neutral-700 hover:text-neutral-950'
+                    ? 'text-[#4cb882]'
+                    : 'text-neutral-900 hover:text-[#4cb882]'
                 }`}
               >
                 {item.label}
-                {isActive && (
-                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#4cb882] rounded-full" />
-                )}
               </a>
             );
           })}
