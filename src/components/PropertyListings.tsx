@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { PropertyFilterSidebar } from './PropertyFilterSidebar';
+import { PropertyResultsGrid } from './PropertyResultsGrid';
 
 export interface PropertyItem {
   id: string;
@@ -169,22 +170,7 @@ export const PropertyListings: React.FC<PropertyListingsProps> = ({
 
             {/* Listings Grid Column */}
             <div className="flex-1 w-full min-w-0">
-              {/* Empty state if filters match nothing */}
-              {properties.length === 0 && (
-                <div className="text-center py-16 px-4 bg-neutral-50 rounded-3xl border border-neutral-200/80 my-2">
-                  <p className="text-lg font-bold text-neutral-800">No properties found matching your search</p>
-                  <p className="text-sm text-neutral-500 mt-1">Try clearing or adjusting your search filters.</p>
-                  <button
-                    type="button"
-                    onClick={onResetFilters}
-                    className="mt-5 bg-[#5dbd8c] hover:bg-[#4eb37f] text-white text-sm font-bold px-6 py-2.5 rounded-full transition-colors cursor-pointer"
-                  >
-                    Reset Search
-                  </button>
-                </div>
-              )}
-
-              {renderCards(true)}
+              <PropertyResultsGrid totalProperties={150} />
             </div>
           </div>
         ) : (
